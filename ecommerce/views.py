@@ -60,3 +60,11 @@ def log(request):
 def out(request):
     logout(request)
     return redirect('home')
+
+
+
+def product(request,pk):
+    product = Product.objects.get(id=pk)
+    related_products = Product.objects.filter(category=product.category)[:3]
+    return render(request,'pages/product.html',{'product':product,
+                                                'products':related_products})
