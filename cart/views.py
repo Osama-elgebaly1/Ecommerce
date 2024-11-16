@@ -1,9 +1,10 @@
 from django.shortcuts import render
-
+from ecommerce.models import Category
 # Create your views here.
 
 def summary(request):
-    return render(request,'cart.html',{})
+    categories = Category.objects.all()
+    return render(request,'cart.html',{'categories':categories})
 
 
 
