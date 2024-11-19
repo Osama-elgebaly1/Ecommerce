@@ -28,6 +28,7 @@
                                 <i class="bi-cart-fill me-1"></i>
                                 Add to cart
                             </button>
+                            
                         </div>
                     </div>
                 </div>
@@ -90,6 +91,9 @@
             },
             success: function(json){
                 console.log(json)
+                document.getElementById("cart-quantity").
+                textContent = json.qty
+
             },
             error: function(xhr , errmsg, err){
                 
