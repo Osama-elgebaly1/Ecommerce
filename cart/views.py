@@ -8,8 +8,7 @@ from django.http import JsonResponse
 def summary(request):
     cart = Cart(request)
     products = cart.get_prods
-    categories = Category.objects.all()
-    return render(request,'cart.html',{'categories':categories,
+    return render(request,'cart.html',{
                                        'products':products})
 
 

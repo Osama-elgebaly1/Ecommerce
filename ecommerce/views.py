@@ -7,18 +7,15 @@ from django.contrib.auth import authenticate , login,logout
 
 
 def home(request):
-    categories = Category.objects.all()
     products = Product.objects.all()
     return render(request,'pages/index.html',{'products':products,
-                                              'categories':categories})
+                                              })
 
 def about(request):
-    categories = Category.objects.all()
-    return render(request,'pages/about.html',{'categories':categories})
+    return render(request,'pages/about.html',{})
 
 
 def register(request):
-    categories = Category.objects.all()
     if request.method == 'POST':
         # fitching data
         firstname = request.POST['firstname']
@@ -32,7 +29,7 @@ def register(request):
             username_error = 'This username is already taken.'
             return render(request,'pages/register.html',{'error':username_error,
                                                          'username':username,
-                                                         'categories':categories})
+                                                         })
         else:
             # registering 
             new_user = User.objects.create_user(username=username,
@@ -44,11 +41,10 @@ def register(request):
             login(request,user=new_user)
             return redirect('home')
     else:
-        return render(request,'pages/register.html',{'categories':categories})
+        return render(request,'pages/register.html',{})
 
 
 def log(request):
-    categories = Category.objects.all()
     if request.method =="POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -59,31 +55,28 @@ def log(request):
         else:
             error = "User is not exist"
             return render(request,'pages/login.html',{'error':error,
-                                                      'categories':categories})
+                                                      })
     else:
-        return render(request,'pages/login.html',{'categories':categories})
+        return render(request,'pages/login.html',{})
 
 
 
 def out(request):
-    categories = Category.objects.all()
     logout(request)
     return redirect('home')
 
 
 
 def product(request,pk):
-    categories = Category.objects.all()
     product = Product.objects.get(id=pk)
     related_products = Product.objects.filter(category=product.category)[:3]
     return render(request,'pages/product.html',{'product':product,
                                                 'products':related_products,
-                                                'categories':categories})
+                                                })
 
 
 def category(request,name):
-    categories = Category.objects.all()
     category = Category.objects.get(name=name)
     products = Product.objects.filter(category=category)
     return render(request,'pages/index.html',{'products':products,
-                                              'categories':categories})
+                                              })
