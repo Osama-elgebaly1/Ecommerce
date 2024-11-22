@@ -23,8 +23,17 @@
                         </div>
                         <p class="lead">{{product.description}}</p>
                         <div class="d-flex">
-                            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" value="{{product.id}} " id='add-cart'>
+                            <div >Quantity: </div>
+                            <div class="container">
+                                <select class="form-select" id='cart-qty'>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                  </select> 
+                            </div>
+                           <button class="btn btn-outline-dark flex-shrink-0" type="button" value="{{product.id}} " id='add-cart'>
                                 <i class="bi-cart-fill me-1"></i>
                                 Add to cart
                             </button>
@@ -85,6 +94,7 @@
             url:'{% url 'cart_add' %}',
             data: {
                 product_id: $('#add-cart').val(),
+                product_qty: $('#cart-qty option:selected').text(),
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 action: 'post'
 

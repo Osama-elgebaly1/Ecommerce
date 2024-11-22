@@ -8,8 +8,10 @@ from django.http import JsonResponse
 def summary(request):
     cart = Cart(request)
     products = cart.get_prods
+    quantities = cart.get_quants
     return render(request,'cart.html',{
-                                       'products':products})
+                                       'products':products,
+                                       'quantities':quantities})
 
 
 
@@ -21,10 +23,11 @@ def add(request):
     if request.POST.get('action') == 'post':
         # get stuff
         product_id = int(request.POST.get('product_id'))
+        product_qty = int(request.POST.get('product_qty'))
         # lookup product in DB
         product = get_object_or_404(Product, id=product_id)
         # save to session
-        cart.add(product=product)
+        cart.add(product=product,quantity=product_qty)
         # get cart qty
         cart_quantity = cart.__len__()
         # return response 
