@@ -46,6 +46,12 @@ class Cart():
         self.session.modified = True
 
         return cart
+    def delete(self,product):
+        product = str(product)
+        cart = self.cart
+        del cart[product]
+        self.session.modified = True
+        return cart
 
 
         
