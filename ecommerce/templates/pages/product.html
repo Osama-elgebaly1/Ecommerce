@@ -103,6 +103,7 @@
                 console.log(json)
                 document.getElementById("cart-quantity").
                 textContent = json.qty
+                location.reload()
 
             },
             error: function(xhr , errmsg, err){

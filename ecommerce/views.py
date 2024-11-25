@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .models import Product,Category
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate , login,logout
+from django.contrib import messages
 # Create your views here.
 
 
@@ -39,6 +40,8 @@ def register(request):
             new_user.last_name = lastname
             new_user.save()
             login(request,user=new_user)
+            messages.success(request,"Succesfully registered ....")
+
             return redirect('home')
     else:
         return render(request,'pages/register.html',{})
@@ -51,7 +54,9 @@ def log(request):
         user = authenticate(username=username,password=password)
         if user is not None:
             login(request,user=user)
+            messages.success(request,"Logged in succesfully ....")
             return redirect('home')
+
         else:
             error = "User is not exist"
             return render(request,'pages/login.html',{'error':error,
@@ -63,6 +68,7 @@ def log(request):
 
 def out(request):
     logout(request)
+    messages.success(request,"Logged out....")
     return redirect('home')
 
 

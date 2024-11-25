@@ -3,6 +3,7 @@ from ecommerce.models import Category
 from .cart import Cart
 from ecommerce.models import Product
 from django.http import JsonResponse
+from django.contrib import messages
 # Create your views here.
 
 def summary(request):
@@ -36,6 +37,7 @@ def add(request):
         # return response 
         # response = JsonResponse({'product name :':product.name})
         response = JsonResponse({'qty':cart_quantity})
+        messages.success(request,"Product is added succesfully....")
         return response
 
     
@@ -45,14 +47,13 @@ def add(request):
 def cart_update(request):
 	cart = Cart(request)
 	if request.POST.get('action') == 'post':
-		# Get stuff
-		product_id = int(request.POST.get('product_id'))
-		product_qty = int(request.POST.get('product_qty'))
+            product_id = int(request.POST.get('product_id'))
+            product_qty = int(request.POST.get('product_qty'))
+            cart.update(product=product_id, quantity=product_qty)
+            messages.success(request,"Product is updated succesfully...")
+            response = JsonResponse({'qty':product_qty})
+            return response
 
-		cart.update(product=product_id, quantity=product_qty)
-
-		response = JsonResponse({'qty':product_qty})
-		return response
 
     
 
@@ -64,7 +65,10 @@ def cart_delete(request):
         if request.POST.get('action') == 'post':
               product_id = int(request.POST.get('product_id'))
               cart.delete(product=product_id)
-              return redirect('cart_summary')
+              messages.success(request,"Product is deleted succesfully...")
+              response = JsonResponse({'product':product_id})
+              messages.success(request,'Product is deleted succesfully...')
+              return response
                   
     
 
