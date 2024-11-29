@@ -4,6 +4,7 @@ from .models import Product,Category
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate , login,logout
 from django.contrib import messages
+from .forms import SignUpForm,LoginForm
 # Create your views here.
 
 
@@ -13,56 +14,55 @@ def home(request):
                                               })
 
 def about(request):
-    return render(request,'pages/about.html',{})
+    return render(request,'pages/about.html')
 
 
 def register(request):
+    form = SignUpForm()
     if request.method == 'POST':
-        # fitching data
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-
-        # checking if username is unique 
-        if User.objects.filter(username=username).exists():
-            username_error = 'This username is already taken.'
-            return render(request,'pages/register.html',{'error':username_error,
-                                                         'username':username,
-                                                         })
-        else:
-            # registering 
-            new_user = User.objects.create_user(username=username,
-                                                password=password,
-                                                email=email)
-            new_user.first_name = firstname
-            new_user.last_name = lastname
-            new_user.save()
-            login(request,user=new_user)
-            messages.success(request,"Succesfully registered ....")
-
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            # log in
+            user = authenticate(username=username,password=password)
+            login(request,user=user)
+            messages.success(request,'Congratulations , You have been registered.... ')
             return redirect('home')
+        else:
+            messages.success(request,'Whoops , there was a problem registering  , please try again ...')
+            return redirect('register')
     else:
-        return render(request,'pages/register.html',{})
+        return render(request,'pages/register.html',{'form':form})
+    
+
 
 
 def log(request):
-    if request.method =="POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username,password=password)
-        if user is not None:
-            login(request,user=user)
-            messages.success(request,"Logged in succesfully ....")
-            return redirect('home')
-
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request,data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username,password=password)
+            if user is not None:
+                login(request,user)
+                messages.success(request,'You have been logged in ...')
+                return redirect('home')
+            else:
+                messages.success(request,'User is not exist , please create an account...')
+                return redirect('register')
+            
         else:
-            error = "User is not exist"
-            return render(request,'pages/login.html',{'error':error,
-                                                      })
+            messages.success(request,'Whoops A problem happened,please try again...')
+            return redirect('login')
     else:
-        return render(request,'pages/login.html',{})
+        return render(request,'pages/login.html',{'form':form})
+            
+
+
 
 
 

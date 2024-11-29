@@ -4,40 +4,19 @@
 {% block content %}
 <div class="container">
   <div class="container">
-    <form method = 'post' action='{% url "register" %}'>
+    <form method = 'POST' action=" {% url "register" %} ">
       {% csrf_token %}
-      <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">First name </label>
-          <input required name='firstname' type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        </div>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Last name </label>
-          <input required name='lastname' type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        </div>
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">User name</label>
-          <input required name='username' type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-          {% if error %}
-              <div id="emailHelp" class="form-text">{{error}}</div>
-          {% else %}
-              <div id="emailHelp" class="form-text">User name must be unique.</div>
 
-          {% endif %}
-        </div>
-      <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input required name='email' type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-      </div>
-      <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input required name='password' type="password" class="form-control" id="exampleInputPassword1">
-      </div>
-  
-      <button type="submit" class="btn btn-secondary mb-5">Submit</button>
+      {{form.as_p}}
+      <button type='submet' class='btn btn-secondary'>Register</button>
+      <br>
+      <br>
     </form>
+
   </div>
 </div>
+
+
 
 
 {% endblock content %}
