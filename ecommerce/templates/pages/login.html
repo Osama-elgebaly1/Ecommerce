@@ -7,7 +7,7 @@
       <form method='POST' action="{% url "login" %}">
         {% csrf_token %}
         {{form.as_p}}
-        <button type='submet' class = 'btn btn-secondary'>Login</button>
+        <button type='submit' class = 'btn btn-secondary'>Login</button>
         <br>
       </form>
 

@@ -4,9 +4,26 @@ from .models import Product,Category
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate , login,logout
 from django.contrib import messages
-from .forms import SignUpForm,LoginForm
+from .forms import SignUpForm,LoginForm,UpdateUserForm
 # Create your views here.
 
+
+def update_user(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(id=request.user.id)
+        form = UpdateUserForm(request.POST or None , instance = user)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Your info have been updated...')
+            login(request,user)
+            return redirect('home')
+        
+        
+        return render(request,'pages/update_user.html',{'form':form})
+    else:
+        messages.success(request,'You must be logged in to access that page ...')
+        return redirect('login')
+    
 
 def home(request):
     products = Product.objects.all()
