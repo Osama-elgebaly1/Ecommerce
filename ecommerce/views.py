@@ -94,7 +94,7 @@ def log(request):
                 return redirect('register')
             
         else:
-            messages.success(request,'Whoops A problem happened,please try again...')
+            messages.success(request,'User name or password is incorrect...')
             return redirect('login')
     else:
         return render(request,'pages/login.html',{'form':form})
