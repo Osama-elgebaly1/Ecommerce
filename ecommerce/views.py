@@ -5,7 +5,22 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate , login,logout
 from django.contrib import messages
 from .forms import SignUpForm,LoginForm,UpdateUserForm,ChangePasswordForm,UserInfoForm
+from django.db.models import Q
 # Create your views here.
+
+def search(request):
+    if request.method == 'POST':
+        searched = request.POST['searched']
+        products = Product.objects.filter(Q(name__icontains = searched) | Q(description__icontains = searched))
+        if not products:
+            messages.success(request,'This product is not exist...Please try again')
+        return render(request,'pages/search.html',{'products':products})
+    else:
+        return render(request,'pages/search.html',{})
+
+
+
+
 def update_info(request):
     if request.user.is_authenticated:
         current_profile = Profile.objects.get(user_id = request.user.id)
