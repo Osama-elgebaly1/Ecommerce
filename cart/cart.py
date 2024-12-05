@@ -1,8 +1,9 @@
-from ecommerce.models import Product
+from ecommerce.models import Product,Profile
 
 class Cart():
     def __init__(self,request):
         self.session = request.session
+        self.request = request
 
         # if new user , there is no  session key , let's create one
         if 'session_key' not in self.session:
@@ -23,6 +24,13 @@ class Cart():
             self.cart[product_id] = int(product_qty)
 
         self.session.modified = True
+        if self.request.user.is_authenticated:
+            profile = Profile.objects.filter(user__id=self.request.user.id)
+            carty = str(self.cart)
+            carty = carty.replace("\'","\"")
+            profile.update(old_cart=carty)
+
+
 
     def __len__(self):
         return len(self.cart)
@@ -63,8 +71,12 @@ class Cart():
         product_qty = int(quantity)
         cart = self.cart
         cart[product_id] = product_qty
-
         self.session.modified = True
+        if self.request.user.is_authenticated:
+            profile = Profile.objects.filter(user__id = self.request.user.id)
+            carty = str(self.cart)
+            carty = carty.replace("\'","\"")
+            profile.update(old_cart=carty)
 
         return cart
     def delete(self,product):
@@ -72,6 +84,11 @@ class Cart():
         cart = self.cart
         del cart[product]
         self.session.modified = True
+        if self.request.user.is_authenticated:
+            profile = Profile.objects.filter(user__id = self.request.user.id)
+            carty = str(self.cart)
+            carty = carty.replace("\'","\"")
+            profile.update(old_cart=carty)
         return cart
 
 

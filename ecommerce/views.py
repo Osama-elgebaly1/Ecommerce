@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate , login,logout
 from django.contrib import messages
 from .forms import SignUpForm,LoginForm,UpdateUserForm,ChangePasswordForm,UserInfoForm
 from django.db.models import Q
+import  json
+from cart.cart import Cart
 # Create your views here.
 
 def search(request):
@@ -117,8 +119,28 @@ def log(request):
             user = authenticate(username=username,password=password)
             if user is not None:
                 login(request,user)
+                profile = Profile.objects.get(user__id = request.user.id)
+                old_cart = profile.old_cart
+                if old_cart:
+                    converted_cart = json.loads(old_cart)
+                    for key,value in converted_cart.items():
+                        cart = Cart(request)
+                        product = Product.objects.get(id=key)
+                        cart.add(product=product,quantity=value)
+                        
+
+
                 messages.success(request,'You have been logged in ...')
                 return redirect('home')
+
+            
+
+
+
+
+
+
+
             else:
                 messages.success(request,'User is not exist , please create an account...')
                 return redirect('register')
