@@ -8,6 +8,8 @@ from .forms import SignUpForm,LoginForm,UpdateUserForm,ChangePasswordForm,UserIn
 from django.db.models import Q
 import  json
 from cart.cart import Cart
+from payment.forms import ShippingForm
+from payment.models import ShippingAddress
 # Create your views here.
 
 def search(request):
@@ -25,14 +27,18 @@ def search(request):
 
 def update_info(request):
     if request.user.is_authenticated:
+        current_user  = ShippingAddress.objects.get(user_id = request.user.id)
+        shipping_form = ShippingForm(request.POST or None ,instance=current_user)
+
         current_profile = Profile.objects.get(user_id = request.user.id)
         form = UserInfoForm(request.POST or None , instance=current_profile)
-        if form.is_valid():
+        if form.is_valid() or shipping_form.is_valid():
             form.save()
+            shipping_form.save()
             messages.success(request,'Your info has been updated....')
             return redirect('home')
         else:
-            return render(request,'pages/update_info.html',{'form':form})
+            return render(request,'pages/update_info.html',{'form':form,'shipping_form':shipping_form})
     else:
         messages.success(request,'You must be logged in to access this page...')
         return redirect('login')
