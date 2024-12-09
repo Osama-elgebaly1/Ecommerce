@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from cart.cart import Cart
-from payment.forms import ShippingForm,ShippingAddress
+from payment.forms import ShippingForm,ShippingAddress,PaymentForm
+from django.contrib import messages
 # Create your views here.
 
 def payment_success(request):
@@ -24,4 +25,46 @@ def checkout(request):
                                        'quantities':quantities,
                                        'total':total,
                                        'shipping_form':shipping_form})
+
+
+
+
+def billing_info(request):
+        if request.POST:
+            cart = Cart(request)
+            products = cart.get_prods
+            quantities = cart.get_quants
+            total = cart.total()
+            
+            shipping_form = request.POST
+            if request.user.is_authenticated:
+                billing_form = PaymentForm()
+
+
+                return render(request,'payment/billing_info.html',{
+                                                'products':products,
+                                                'quantities':quantities,
+                                                'total':total,
+                                                'shipping_info':shipping_form,
+                                                'billing_form':billing_form
+                                                })
+            
+
+            else:
+                billing_form = PaymentForm()
+                return render(request,'payment/billing_info.html',{
+                                                'products':products,
+                                                'quantities':quantities,
+                                                'total':total,
+                                                'shipping_info':shipping_form,
+                                                'billing_form':billing_form
+
+                                                })
+                 
+            
+                 
+        else:
+             messages.success(request,'Access Denied ')
+             return redirect('home')
+
 
