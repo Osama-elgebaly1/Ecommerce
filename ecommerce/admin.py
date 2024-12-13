@@ -11,5 +11,3 @@ admin.site.register(Profile)
 
 
 
-
-

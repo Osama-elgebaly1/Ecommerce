@@ -133,6 +133,14 @@ def order_success(request):
                                           quantity=quantity)
                         order_item.save()
 
+            # Delete cart 
+              for key in list(request.session.keys()):
+                   if key == 'session_key':
+                        del request.session[key]
+               
+
+
+
 
 
 
