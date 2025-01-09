@@ -3,6 +3,8 @@ from cart.cart import Cart
 from payment.forms import ShippingForm,ShippingAddress,PaymentForm
 from django.contrib import messages
 from .models import Order , OrderItem
+import datetime
+from ecommerce.models import Profile
 # Create your views here.
 
 def payment_success(request):
@@ -137,6 +139,8 @@ def order_success(request):
               for key in list(request.session.keys()):
                    if key == 'session_key':
                         del request.session[key]
+          user = Profile.objects.filter(user__id = request.user.id)
+          user.update(old_cart="")
 
           messages.success(request,'Order Placed...')
           return redirect('home')
@@ -148,6 +152,13 @@ def order_success(request):
 def shipped_dash(request):
      if request.user.is_authenticated and request.user.is_superuser:
           orders = Order.objects.filter(shipped=True)
+          if request.method == 'POST':
+               status = False
+               num = request.POST['num']
+               order = Order.objects.filter(id=num)
+               order.update(shipped=status)
+               messages.success(request,'Status Updated ')
+
 
           return render(request,'payment/shipped_dash.html',{'orders':orders})
      else:
@@ -160,6 +171,14 @@ def shipped_dash(request):
 def not_shipped_dash(request):
      if request.user.is_authenticated and request.user.is_superuser:
           orders = Order.objects.filter(shipped=False)
+          if request.method == 'POST':
+               status = True
+               num = request.POST['num']
+               order = Order.objects.filter(id=num)
+               now = datetime.datetime.now()
+               order.update(shipped=status,date_shipped=now)
+               messages.success(request,'Status Updated ')
+
           return render(request,'payment/not_shipped_dash.html',{'orders':orders})
      else:
           messages.success(request,'Access Denied ')
@@ -170,6 +189,20 @@ def orders(request,pk):
       if request.user.is_authenticated and request.user.is_superuser:
           order = Order.objects.get(id=pk)
           items = OrderItem.objects.filter(order = pk)
+          if request.method == 'POST':
+               status = request.POST['status']
+               if status == 'True':
+                    order = Order.objects.filter(id=pk)
+                    now = datetime.datetime.now()
+                    order.update(shipped=True,date_shipped=now)
+               else:
+                    order = Order.objects.filter(id=pk)
+                    order.update(shipped=False)
+               messages.success(request,'Order updated ')
+               return redirect('home')
+          
+
+
           return render(request,'payment/orders.html',{'order':order,
                                                        'items':items})
       else:

@@ -4,7 +4,7 @@
 <header class=" py-5">
     <div class="container">
         <div class="text-center">
-            <h1 class="display-4 fw-bolder">Un-Shipped Items </h1>
+
         </div>
     </div>
 </header>
@@ -31,6 +31,24 @@
                 {% for item in items %}
                     {{item.product}} - {{item.quantity }} - ${{item.price}} <br>
                 {% endfor %}
+                <br><br>
+                {% if order.shipped %}
+                    <form  method='POST'>
+                        {% csrf_token %}
+                        <input type="hidden" name='status' value='False'>
+                        <button type='submit' class='btn btn-danger'>Mark As Un-Shipped</button>
+                    </form>
+                {% else %}
+                    <form method='POST'>
+                        {% csrf_token %}
+                        <input type="hidden" name='status' value='True'>
+                        <button type='submit' class='btn btn-success'>Mark As Shipped</button>
+                    </form>
+                
+                    
+                    
+                {% endif %}
+
 
             </div>
           </div>
@@ -43,3 +61,5 @@
 
 
 {% endblock content %}
+
+
